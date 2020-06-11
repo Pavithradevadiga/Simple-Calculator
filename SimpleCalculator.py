@@ -1,12 +1,16 @@
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton #import statements
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter,QBrush,QPen
+import sys
 
-class MainWindow(QMainWindow): #New Class 
+class MainWindow(QMainWindow): #New Class
+
+     
 
     def __init__(self, *args, **kwargs):  #init is defined 
         super(MainWindow, self).__init__(*args, **kwargs)  #super init is called from parent class
-
+        
+        self.store = ''
         self.setWindowTitle("Calculator")  #sets the window title
         self.NameLabel = QLabel("A Simple calculator",self) #Set the application title
         self.NameLabel.move(720,50)  #Move to a particular position
@@ -81,19 +85,47 @@ class MainWindow(QMainWindow): #New Class
 
         zero = QPushButton('0', self) #the button '0'
         zero.move(675,795)
-        zero.resize(187.5,150)
+        zero.resize(188,150)
         zero.setStyleSheet("font: 40px")
 
         equal = QPushButton('=', self) #the button '='
-        equal.move(862.5,795)
-        equal.resize(187.5,150)
+        equal.move(863,795)
+        equal.resize(187,150)
         equal.setStyleSheet("font: 40px")
 
-        lastres = QPushButton('Search for a saved calculation ', self) #the button 'saved calculations'
-        lastres.move(1050,795)
-        lastres.resize(175,150)
-        lastres.setStyleSheet("font: 11px")
-        
+        Clear = QPushButton('Clear ', self) #the 'clear' button
+        Clear.move(1050,795)
+        Clear.resize(175,150)
+        Clear.setStyleSheet("font: 11px")
+
+        self.result = QLabel('x', self) #the button '0'
+        self.result.move(1500,455)
+        self.result.resize(188,150)
+        self.result.setStyleSheet("font: 15px")
+
+        Clear.clicked.connect(self.showCalculation) #When the clear is clicked showcalculation should be executed
+        equal.clicked.connect(self.showCalculation) #When the equal is clicked showcalculation should be executed
+        zero.clicked.connect(self.showCalculation) #When the 0 is clicked showcalculation should be executed
+        one.clicked.connect(self.showCalculation) #When the 1 is clicked showcalculation should be executed
+        two.clicked.connect(self.showCalculation) #When the 2 is clicked showcalculation should be executed
+        three.clicked.connect(self.showCalculation) #When the 3 is clicked showcalculation should be executed
+        four.clicked.connect(self.showCalculation) #When the 4 is clicked showcalculation should be executed
+        five.clicked.connect(self.showCalculation) #When the 5 is clicked showcalculation should be executed
+        six.clicked.connect(self.showCalculation) #When the 6 is clicked showcalculation should be executed
+        seven.clicked.connect(self.showCalculation) #When the 7 is clicked showcalculation should be executed
+        eight.clicked.connect(self.showCalculation) #When the 8 is clicked showcalculation should be executed
+        nine.clicked.connect(self.showCalculation) #When the 9 is clicked showcalculation should be executed
+        plus.clicked.connect(self.showCalculation) #When the + is clicked showcalculation should be executed
+        minus.clicked.connect(self.showCalculation) #When the - is clicked showcalculation should be executed
+        multi.clicked.connect(self.showCalculation) #When the x is clicked showcalculation should be executed
+        divide.clicked.connect(self.showCalculation) #When the / is clicked showcalculation should be executed
+    
+    
+    
+    def showCalculation(self):
+        self.store = self.store+self.sender().text()
+        self.result.setText(self.store)     #When the buttons are pressed their respective texts are shown
+
 
     def paintEvent(self,e):  #The coover of calculator
         painter = QPainter(self) #The initial outer cover of calculator
@@ -116,7 +148,7 @@ class MainWindow(QMainWindow): #New Class
         painter4.setPen(QPen(Qt.black, 5, Qt.SolidLine)) #setting the painter3 length
         painter4.drawRect(675,795,375,150)    #set up a rectangle of painter3   
 
-        
+      
 
 
 app = QApplication([])    
