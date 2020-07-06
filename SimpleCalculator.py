@@ -16,6 +16,9 @@ class MainWindow(QMainWindow): #New Class
         self.NameLabel.move(720,50)  #Move to a particular position
         self.NameLabel.setFixedSize(500,100)  #Set the height and width of the title
         self.NameLabel.setStyleSheet("font: 30pt Comic Sans MS")  #set fontStyle
+        self.previous = 0 #variables used to avoid multiple signs in a row
+        self.next = 0
+        self.flag = 1
 
         one = QPushButton('1', self) #the button '1'
         one.move(675,195)
@@ -72,7 +75,7 @@ class MainWindow(QMainWindow): #New Class
         minus.resize(175,150)
         minus.setStyleSheet("font: 60px")
 
-        multi = QPushButton('X', self) #the button 'X'
+        multi = QPushButton('*', self) #the button '*'
         multi.move(1050,495)
         multi.resize(175,150)
         multi.setStyleSheet("font: 40px")
@@ -103,8 +106,8 @@ class MainWindow(QMainWindow): #New Class
         self.result.resize(188,150)
         self.result.setStyleSheet("font: 15px")
 
-        Clear.clicked.connect(self.showCalculation) #When the clear is clicked showcalculation should be executed
-        equal.clicked.connect(self.showCalculation) #When the equal is clicked showcalculation should be executed
+        Clear.clicked.connect(self.clear) #When the clear is clicked showcalculation should be executed
+        equal.clicked.connect(self.equal) #Result of  a calcaulation
         zero.clicked.connect(self.showCalculation) #When the 0 is clicked showcalculation should be executed
         one.clicked.connect(self.showCalculation) #When the 1 is clicked showcalculation should be executed
         two.clicked.connect(self.showCalculation) #When the 2 is clicked showcalculation should be executed
@@ -119,12 +122,37 @@ class MainWindow(QMainWindow): #New Class
         minus.clicked.connect(self.showCalculation) #When the - is clicked showcalculation should be executed
         multi.clicked.connect(self.showCalculation) #When the x is clicked showcalculation should be executed
         divide.clicked.connect(self.showCalculation) #When the / is clicked showcalculation should be executed
-    
+        
     
     
     def showCalculation(self):
-        self.store = self.store+self.sender().text()
+        self.next = self.sender().text()   #To avoid multiple signs concurrently in a calculation
+        if (self.previous == '+' or self.previous == '-' or self.previous == '*' or self.previous == '/') and (self.next == '+' or self.next == '-' or self.next == '*' or self.next == '/'):
+            self.store = self.store[0:len(self.store)-1]+self.sender().text()
+        else:
+           self.store = self.store+self.sender().text()  
         self.result.setText(self.store)     #When the buttons are pressed their respective texts are shown
+        self.previous = self.next
+        
+
+    def clear(self):
+        self.store = ''
+        self.result.setText('')     #When the buttons are pressed their respective texts are shown
+
+    def equal(self):
+        if self.store[-1] == '+' or self.store[-1] == '-' or self.store[-1] == '*' or self.store[-1] == '/':
+            calculation = self.store[0:len(self.store) - 1]
+            self.flag = 0         #To keep the changes made by deleting the sign at the end
+        if  self.store[0] == '*' or self.store[0] == '/':
+            calculation = self.store[1:]
+        elif self.flag == 0:    #To check if the last character was removed
+            calculation = calculation[1:]
+        else:
+            calculation = self.store   #to remove the sign if it's present at the end and beginning
+        result = 0
+        signs = ['+','-','*','/']
+        print(eval(calculation))             
+                
 
 
     def paintEvent(self,e):  #The coover of calculator
