@@ -12,13 +12,18 @@ class MainWindow(QMainWindow): #New Class
         
         self.store = ''
         self.setWindowTitle("Calculator")  #sets the window title
+        self.ErrorLabel = QLabel("",self) #Visible only when there is a error
+        self.ErrorLabel.setStyleSheet("color :red ;font: 20pt")
+        self.ErrorLabel.setFixedSize(650,200) #Set the height and width of the title
+        self.ErrorLabel.move(720,10)
         self.NameLabel = QLabel("A Simple calculator",self) #Set the application title
         self.NameLabel.move(720,50)  #Move to a particular position
-        self.NameLabel.setFixedSize(500,100)  #Set the height and width of the title
+        self.NameLabel.setFixedSize(700,200) #Set the height and width of the title
         self.NameLabel.setStyleSheet("font: 30pt Comic Sans MS")  #set fontStyle
         self.previous = 0 #variables used to avoid multiple signs in a row
         self.next = 0
         self.flag = 1
+        self.signs = ['+','-','*','/']
 
         one = QPushButton('1', self) #the button '1'
         one.move(675,195)
@@ -103,7 +108,7 @@ class MainWindow(QMainWindow): #New Class
 
         self.result = QLabel('x', self) #the button '0'
         self.result.move(1500,455)
-        self.result.resize(188,150)
+        self.result.resize(488,550)
         self.result.setStyleSheet("font: 15px")
 
         Clear.clicked.connect(self.clear) #When the clear is clicked showcalculation should be executed
@@ -127,7 +132,7 @@ class MainWindow(QMainWindow): #New Class
     
     def showCalculation(self):
         self.next = self.sender().text()   #To avoid multiple signs concurrently in a calculation
-        if (self.previous == '+' or self.previous == '-' or self.previous == '*' or self.previous == '/') and (self.next == '+' or self.next == '-' or self.next == '*' or self.next == '/'):
+        if (self.previous in self.signs) and (self.next in self.signs):
             self.store = self.store[0:len(self.store)-1]+self.sender().text()
         else:
            self.store = self.store+self.sender().text()  
@@ -140,18 +145,15 @@ class MainWindow(QMainWindow): #New Class
         self.result.setText('')     #When the buttons are pressed their respective texts are shown
 
     def equal(self):
-        if self.store[-1] == '+' or self.store[-1] == '-' or self.store[-1] == '*' or self.store[-1] == '/':
-            calculation = self.store[0:len(self.store) - 1]
-            self.flag = 0         #To keep the changes made by deleting the sign at the end
-        if  self.store[0] == '*' or self.store[0] == '/':
-            calculation = self.store[1:]
-        elif self.flag == 0:    #To check if the last character was removed
-            calculation = calculation[1:]
-        else:
-            calculation = self.store   #to remove the sign if it's present at the end and beginning
-        result = 0
-        signs = ['+','-','*','/']
-        print(eval(calculation))             
+        calculation = self.store  #Calculation is filtered to remove signs from the beginning and end
+        if calculation[-1] in self.signs:
+            calculation = calculation[0:len(calculation) - 1]
+        if  calculation[0] == '*' or calculation[0] == '/':
+            calculation = calculation[1:]   
+        result = str(eval(calculation)) #Evaluate the result
+        self.result.setText(result) #Set the result
+        self.store = str(result)   #To make sure the upcoming values initializes with this value 
+       
                 
 
 
